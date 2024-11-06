@@ -7,3 +7,7 @@ Este projeto é um RPA desenvolvido em Python que realiza a captura de novos reg
 - **`rpa_sync.py`**: Script principal do RPA que executa a captura e sincronização dos dados entre os bancos de dados. Ele monitora o banco de origem, detecta novos inserts e insere esses registros no banco de destino.
 - **`requirements.txt`**: Arquivo de dependências do projeto, que lista as bibliotecas necessárias para executar o RPA.
 - **`rpa_log.log`**: Arquivo de log que registra todas as atividades realizadas pelo RPA, incluindo eventuais erros, o que facilita a monitoração e a análise do funcionamento do processo.
+
+## Criadores
+- Murilo de Oliveira Moreira
+- Carlos Henrique de Godoy Santos
