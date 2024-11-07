@@ -262,54 +262,6 @@ def sync_aluno(cursor_db1, cursor_db2, connection_db1, connection_db2):
         connection_db2.rollback()
         logging.error(f"Erro ao sincronizar tabela aluno: {e}")
 
-def sync_responsavel(cursor_db1, cursor_db2, connection_db1, connection_db2):
-    try:
-        # Captura os dados da tabela do banco 1
-        cursor_db1.execute("SELECT * FROM responsavel;")
-        responsavel_records_db1 = cursor_db1.fetchall()
-        logging.info("Dados de responsavel obtidos do Banco 1 para sincronização.")
-
-        # Captura os dados da tabela do banco 2
-        cursor_db2.execute("SELECT * FROM responsavel;")
-        responsavel_records_db2 = cursor_db2.fetchall()
-        logging.info("Dados de responsavel obtidos do Banco 2 para sincronização.")
-
-        # Extrai os IDs da tabela 'responsavel' do Banco 1
-        ids_db1 = [record[0] for record in responsavel_records_db1]
-
-        # Insere registros que estão no Banco 2 e faltam no Banco 1
-        for responsavel in responsavel_records_db2:
-            (id, nome, sobrenome, email, senha, id_aluno) = responsavel
-            if id not in ids_db1:
-                cursor_db1.execute("""
-                    INSERT INTO responsavel 
-                    (id, nome, sobrenome, email, senha, id_aluno)
-                    VALUES (%s, %s, %s, %s, %s, %s);
-                """, (id, nome, sobrenome, email, senha, id_aluno))
-                logging.info(f"Novo registro de responsavel com ID {id} inserido no Banco 1.")
-
-        # Atualiza registros do Banco 1 para o Banco 2
-        for responsavel in responsavel_records_db1:
-            (id, nome, sobrenome, email, senha, id_aluno) = responsavel
-            cursor_db2.execute("""
-                UPDATE responsavel SET
-                nome = %s, sobrenome = %s, email = %s, senha = %s, id_aluno = %s
-                WHERE id = %s;
-            """, (nome, sobrenome, email, senha, id_aluno, id))
-            logging.info(f"Registro de responsavel com ID {id} atualizado no Banco 2.")
-
-        # Confirma as alterações
-        connection_db1.commit()
-        connection_db2.commit()
-        logging.info("Sincronização de responsavel finalizada.")
-
-    except Exception as e:
-        # Em caso de erro, reverte as alterações em ambas as conexões
-        connection_db1.rollback()
-        connection_db2.rollback()
-        logging.error(f"Erro ao sincronizar tabela responsavel: {e}")
-
-
 # Funcao principal
 def main():
     load_dotenv()
@@ -324,7 +276,6 @@ def main():
             sync_professor(cursor_db1, cursor_db2, connection_db1, connection_db2)
             sync_turma(cursor_db1, cursor_db2, connection_db1, connection_db2)
             sync_aluno(cursor_db1, cursor_db2, connection_db1, connection_db2)
-            sync_responsavel(cursor_db1, cursor_db2, connection_db1, connection_db2)
 
 
             logging.info("Sincronizacao completa com sucesso.")
