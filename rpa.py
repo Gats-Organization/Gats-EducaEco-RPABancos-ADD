@@ -231,23 +231,24 @@ def sync_aluno(cursor_db1, cursor_db2, connection_db1, connection_db2):
 
         # Insere registros que estão no Banco 2 e faltam no Banco 1
         for aluno in aluno_records_db2:
-            (id, nome, sobrenome, email, senha, xp, id_turma) = aluno
-            if id not in ids_db1:
+            (id_user, nome, sobrenome, email, senha, xp, id_turma) = aluno
+            if id_user not in ids_db1:
                 cursor_db1.execute("""
                     INSERT INTO aluno 
                     (id, nome, sobrenome, email, senha, xp, id_turma)
                     VALUES (%s, %s, %s, %s, %s, %s, %s);
-                """, (id, nome, sobrenome, email, senha, xp, id_turma))
+                """, (id_user, nome, sobrenome, email, senha, xp, id_turma))
                 logging.info(f"Novo registro de aluno com ID {id} inserido no Banco 1.")
 
         # Atualiza registros do Banco 1 para o Banco 2
         for aluno in aluno_records_db1:
-            (id, nome, sobrenome, email, senha, xp, id_turma) = aluno
+            print(aluno)
+            (id_user, nome, sobrenome, xp, email, senha, id_turma) = aluno
             cursor_db2.execute("""
                 UPDATE aluno SET
                 nome = %s, sobrenome = %s, email = %s, senha = %s, xp = %s, id_turma = %s
                 WHERE id = %s;
-            """, (nome, sobrenome, email, senha, xp, id_turma, id))
+            """, (nome, sobrenome, email, senha, xp, id_turma, id_user))
             logging.info(f"Registro de aluno com ID {id} atualizado no Banco 2.")
 
         # Confirma as alterações
